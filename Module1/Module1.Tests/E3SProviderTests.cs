@@ -52,6 +52,42 @@ namespace Module1.Tests
         }
 
         [TestMethod]
+        public void Where_StartsWith()
+        {
+            // Act
+            var actual = _employees.Where(c => c.workstation.StartsWith("EPBYMINW613")).ToList();
+            var expected = _client.SearchFTS<EmployeeEntity>("workstation:(EPBYMINW613*)", 0, 10).ToList();
+
+            //Assert
+            Assert.AreEqual(expected.Count, actual.Count);
+            CollectionAssert.AreEqual(expected, actual, new EmployeeWorkstationEqualityComparer());
+        }
+
+        [TestMethod]
+        public void Where_EndsWith()
+        {
+            // Act
+            var actual = _employees.Where(c => c.workstation.EndsWith("BYMINW6137")).ToList();
+            var expected = _client.SearchFTS<EmployeeEntity>("workstation:(*BYMINW6137)", 0, 10).ToList();
+
+            //Assert
+            Assert.AreEqual(expected.Count, actual.Count);
+            CollectionAssert.AreEqual(expected, actual, new EmployeeWorkstationEqualityComparer());
+        }
+
+        [TestMethod]
+        public void Where_Contains()
+        {
+            // Act
+            var actual = _employees.Where(c => c.workstation.Contains("BYMINW613")).ToList();
+            var expected = _client.SearchFTS<EmployeeEntity>("workstation:(*BYMINW613*)", 0, 10).ToList();
+
+            //Assert
+            Assert.AreEqual(expected.Count, actual.Count);
+            CollectionAssert.AreEqual(expected, actual, new EmployeeWorkstationEqualityComparer());
+        }
+
+        [TestMethod]
         public void When_Use_Provider_Reversed()
         {
             foreach (var emp in _employees.Where(c => "EPBYMINW6137" == c.workstation))
