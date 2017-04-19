@@ -23,8 +23,9 @@ namespace Task2.ExpressionTransformation
 
         private static bool IsRightNodeConstValue(BinaryExpression node)
         {
-            var constExp = node.Right as ConstantExpression;
-            return constExp != null && Equals(constExp.Value, ConstValue);
+            var isComplex = node.Left.NodeType == ExpressionType.Add || node.Left.NodeType == ExpressionType.Subtract;
+            var constExp = node.Right as ConstantExpression ?? node.Left as ConstantExpression;
+            return !isComplex && constExp != null && Equals(constExp.Value, ConstValue);
         }
     }
 }

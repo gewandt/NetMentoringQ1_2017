@@ -31,14 +31,19 @@ namespace Task3.ExtendedLinqProvider
                 return base.VisitMethodCall(node);
             }
             var isContains = node.Method.Name == "Contains";
+            var before = node.Method.Name == "EndsWith" || isContains;
             var after = node.Method.Name == "StartsWith" || isContains;
-            if (!after) return base.VisitMethodCall(node);
-            Visit(memberExpression);
-            _resultString.Append("(");
-            Visit(node.Arguments[0]);
-            _resultString.Append("*");
-            _resultString.Append(")");
-            return node;
+            if (after || before)
+            {
+                Visit(memberExpression);
+                _resultString.Append("(");
+                if (before) _resultString.Append("*");
+                Visit(node.Arguments[0]);
+                if (after) _resultString.Append("*");
+                _resultString.Append(")");
+                return node;
+            }
+            return base.VisitMethodCall(node);
         }
 
         protected override Expression VisitBinary(BinaryExpression node)

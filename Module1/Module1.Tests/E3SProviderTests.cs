@@ -11,23 +11,22 @@ namespace Module1.Tests
 	[TestClass]
 	public class E3SProviderTests
 	{
-	    private E3SQueryClient _client;
-	    private E3SEntitySet<EmployeeEntity> _employees;
+	    private static E3SQueryClient _client;
+	    private static E3SEntitySet<EmployeeEntity> _employees;
 
-        [TestInitialize]
-	    public void Init()
-	    {
+        static E3SProviderTests()
+        {
             _client = new E3SQueryClient(
-                ConfigurationManager.AppSettings["user"], 
-                ConfigurationManager.AppSettings["password"],
-                ConfigurationManager.AppSettings["uri"]
-                );
+               ConfigurationManager.AppSettings["user"],
+               ConfigurationManager.AppSettings["password"],
+               ConfigurationManager.AppSettings["uri"]
+               );
             _employees = new E3SEntitySet<EmployeeEntity>(
                 ConfigurationManager.AppSettings["user"],
                 ConfigurationManager.AppSettings["password"],
                 ConfigurationManager.AppSettings["uri"]
                 );
-	    }
+        }
 
         [TestMethod]
         public void When_Use_And_Operator()
@@ -85,15 +84,6 @@ namespace Module1.Tests
             //Assert
             Assert.AreEqual(expected.Count, actual.Count);
             CollectionAssert.AreEqual(expected, actual, new EmployeeWorkstationEqualityComparer());
-        }
-
-        [TestMethod]
-        public void When_Use_Provider_Reversed()
-        {
-            foreach (var emp in _employees.Where(c => "EPBYMINW6137" == c.workstation))
-            {
-                Console.WriteLine($"{emp.nativename} {emp.room}");
-            }
         }
     }
 }

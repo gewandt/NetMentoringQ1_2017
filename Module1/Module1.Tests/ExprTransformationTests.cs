@@ -49,7 +49,7 @@ namespace Module1.Tests
 
             // Assert
             Assert.AreEqual(expectedResult, actualResult);
-            Assert.AreEqual(expression.ToString(), actualResult.ToString());
+            Assert.AreEqual(expectedResult.ToString(), actualResult.ToString());
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace Module1.Tests
 
             // Assert
             Assert.AreEqual(expectedResult, actualResult);
-            Assert.AreEqual(expression.ToString(), actualResult.ToString());
+            Assert.AreEqual(expectedResult.ToString(), actualResult.ToString());
         }
 
         [TestMethod]
