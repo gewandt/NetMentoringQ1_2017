@@ -13,6 +13,8 @@ namespace Task1.ClassMapper
             var sourceParam = Expression.Parameter(typeof(TSource));
             var destExp = Expression.New(typeof(TDestination));
 
+            var sameFields = GetSameFields<TSource, TDestination>();
+
             var sameProperties = GetSameProperties<TSource, TDestination>();
             var bindMembers = sameProperties
                 .Select(c => Expression.Bind(destExp.Type.GetProperty(c.Name), Expression.Call(sourceParam, c.GetGetMethod())))
@@ -34,6 +36,18 @@ namespace Task1.ClassMapper
                     from destProp in destProps
                     where destProp.Name == sourceProp.Name && 
                     destProp.PropertyType.FullName == sourceProp.PropertyType.FullName
+                    select sourceProp);
+        }
+
+        private static IEnumerable<FieldInfo> GetSameFields<TSource, TDestination>()
+        {
+            var sourceProps = typeof(TSource).GetFields(BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Public);
+            var destProps = typeof(TDestination).GetFields(BindingFlags.Instance | BindingFlags.GetField | BindingFlags.NonPublic | BindingFlags.Public);
+
+            return (from sourceProp in sourceProps
+                    from destProp in destProps
+                    where destProp.Name == sourceProp.Name &&
+                    destProp.FieldType.FullName == sourceProp.FieldType.FullName
                     select sourceProp);
         }
     }

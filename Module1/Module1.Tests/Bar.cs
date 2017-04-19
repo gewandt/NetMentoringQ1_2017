@@ -10,5 +10,10 @@ namespace Module1.Tests
         public int FourthProp { get; set; }
         public int OnlyGet { get; }
         private int failModule;
+
+        public int Get()
+        {
+            return failModule;
+        }
     }
 }
