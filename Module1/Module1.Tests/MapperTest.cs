@@ -22,6 +22,7 @@ namespace Module1.Tests
             Assert.AreEqual(expectedFoo.FirstProp, actualBar.FirstProp);
             Assert.AreEqual(expectedFoo.SecondProp, actualBar.SecondProp);
             Assert.AreEqual(expectedFoo.ThirdProp, actualBar.ThirdProp);
+            Assert.AreEqual(expectedFoo.Get(), actualBar.Get());
         }
     }
 }

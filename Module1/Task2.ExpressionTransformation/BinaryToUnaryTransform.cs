@@ -1,31 +1,45 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 
 namespace Task2.ExpressionTransformation
 {
     public class BinaryToUnaryTransform : ExpressionVisitor
     {
         private const int ConstValue = 1;
-        private static readonly ConstantExpression Constant = Expression.Constant(ConstValue);
-        private static readonly UnaryExpression IncExp = Expression.Increment(Constant);
-        private static readonly UnaryExpression DecExp = Expression.Decrement(Constant);
 
         protected override Expression VisitBinary(BinaryExpression node)
         {
-            if (IsRightNodeConstValue(node) == false) return base.VisitBinary(node);
-            return GetUnaryExpression(node) ?? base.VisitBinary(node);
+            Console.WriteLine($"Expression: {node}; Left: {node.Left}; Right: {node.Right}");
+
+            var right = node.Right as ConstantExpression;
+            if (right != null && ConstValue.Equals(right.Value))
+            {
+                var visited = Visit(node.Left);
+                return GetIncrementDecrement(node.NodeType, visited);
+            }
+
+            var left = node.Left as ConstantExpression;
+            if (left != null && ConstValue.Equals(left.Value))
+            {
+                var visited = Visit(node.Right);
+                return GetIncrementDecrement(node.NodeType, visited);
+            }
+
+            return base.VisitBinary(node);
         }
 
-        private static UnaryExpression GetUnaryExpression(Expression node)
+        private Expression GetIncrementDecrement(ExpressionType type, Expression nodeLeft)
         {
-            if (node.NodeType == ExpressionType.Add) return IncExp;
-            return node.NodeType == ExpressionType.Subtract ? DecExp : null;
-        }
+            switch (type)
+            {
+                case ExpressionType.Add:
+                    return Expression.Increment(nodeLeft);
+                case ExpressionType.Subtract:
+                    return Expression.Decrement(nodeLeft);
+                default:
+                    return nodeLeft;
 
-        private static bool IsRightNodeConstValue(BinaryExpression node)
-        {
-            var isComplex = node.Left.NodeType == ExpressionType.Add || node.Left.NodeType == ExpressionType.Subtract;
-            var constExp = node.Right as ConstantExpression ?? node.Left as ConstantExpression;
-            return !isComplex && constExp != null && Equals(constExp.Value, ConstValue);
+            }
         }
     }
 }

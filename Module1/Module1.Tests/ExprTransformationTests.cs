@@ -56,13 +56,33 @@ namespace Module1.Tests
         public void When_Multiple_Const_Replace()
         {
             // Arrange
-            Expression<Func<int, int>> expression = a => (a + 1) + 1;
+            Expression<Func<int, int>> expression = a => 1 +(a + 1) + 1;
 
             // Act
             var resultExpr = _transformBinUnary.VisitAndConvert(expression, null);
-            var expectedResult = expression.Compile().Invoke(1);
-            var actualResult = resultExpr.Compile().Invoke(1);
+            var expectedResult = expression.Compile().Invoke(99);
+            var actualResult = resultExpr.Compile().Invoke(99);
 
+            Console.WriteLine(expression);
+            Console.WriteLine(resultExpr);
+            // Assert
+            Assert.AreEqual(expectedResult, actualResult);
+            Assert.AreEqual(expectedResult.ToString(), actualResult.ToString());
+        }
+
+        [TestMethod]
+        public void When_Binary_On_Constants_Replace()
+        {
+            // Arrange
+            Expression<Func<int, int>> expression = a => (1 + 1) + (a + 1);
+
+            // Act
+            var resultExpr = _transformBinUnary.VisitAndConvert(expression, null);
+            var expectedResult = expression.Compile().Invoke(99);
+            var actualResult = resultExpr.Compile().Invoke(99);
+
+            Console.WriteLine(expression);
+            Console.WriteLine(resultExpr);
             // Assert
             Assert.AreEqual(expectedResult, actualResult);
             Assert.AreEqual(expectedResult.ToString(), actualResult.ToString());

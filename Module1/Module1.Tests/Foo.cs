@@ -13,5 +13,10 @@ namespace Module1.Tests
         public Guid ThirdProp { get; set; }
         public int OnlyGet { get; set; }
         private int failModule;
+
+        public int Get()
+        {
+            return failModule;
+        }
     }
 }
