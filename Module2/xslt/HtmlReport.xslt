@@ -3,7 +3,7 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:msxsl="urn:schemas-microsoft-com:xslt"
                 exclude-result-prefixes="msxsl"
-                xmlns:lib="http://library.by/catalog">
+                xmlns:library="http://library.by/catalog">
 
   <xsl:output method="html" indent="yes"/>
 
@@ -17,8 +17,8 @@
     <genre>Science Fiction</genre>
   </xsl:variable>
 
-  <xsl:template match="/lib:catalog">
-    <xsl:variable name="books" select="/lib:catalog/lib:book"/>
+  <xsl:template match="/library:catalog">
+    <xsl:variable name="books" select="/library:catalog/library:book"/>
     <html>
       <body>
         <h1>
@@ -41,20 +41,20 @@
               <th>Registration Date</th>
             </tr>
 
-            <xsl:variable name="books-for-genre" select="$books[lib:genre = $genre]"/>
+            <xsl:variable name="books-for-genre" select="$books[library:genre = $genre]"/>
             <xsl:for-each select="$books-for-genre">
               <tr>
                 <td>
-                  <xsl:value-of select="lib:author"/>
+                  <xsl:value-of select="library:author"/>
                 </td>
                 <td>
-                  <xsl:value-of select="lib:title"/>
+                  <xsl:value-of select="library:title"/>
                 </td>
                 <td>
-                  <xsl:value-of select="lib:publish_date"/>
+                  <xsl:value-of select="library:publish_date"/>
                 </td>
                 <td>
-                  <xsl:value-of select="lib:registration_date"/>
+                  <xsl:value-of select="library:registration_date"/>
                 </td>
               </tr>
             </xsl:for-each>

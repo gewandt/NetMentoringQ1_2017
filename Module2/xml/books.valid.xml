@@ -15,6 +15,7 @@
     <registration_date>2016-01-05</registration_date>
   </book>
   <book id="bk102">
+    <isbn>0-233-00103-7</isbn>
     <author>Ralls, Kim</author>
     <title>Midnight Rain</title>
     <genre>Fantasy</genre>
@@ -117,6 +118,7 @@
     <registration_date>2016-01-05</registration_date>
   </book>
   <book id="bk110">
+    <isbn>0-596-00102-7</isbn>
     <author>O'Brien, Tim</author>
     <title>Microsoft .NET: The Programming Bible</title>
     <genre>Computer</genre>

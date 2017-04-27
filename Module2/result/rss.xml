@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Library.by</title>
+    <description>Library</description>
+    <item>
+      <title>COM and .NET Component Services</title>
+      <link>http://my.safaribooksonline.com/0-596-00103-7/</link>
+      <updated>2016-01-05</updated>
+    </item>
+    <item>
+      <title>Midnight Rain</title>
+      <updated>2017-01-01</updated>
+    </item>
+    <item>
+      <title>Maeve Ascendant</title>
+      <updated>2016-01-05</updated>
+    </item>
+    <item>
+      <title>Oberon's Legacy</title>
+      <updated>2012-03-01</updated>
+    </item>
+    <item>
+      <title>The Sundered Grail</title>
+      <updated>2016-01-05</updated>
+    </item>
+    <item>
+      <title>Lover Birds</title>
+      <updated>2016-01-05</updated>
+    </item>
+    <item>
+      <title>Splish Splash</title>
+      <updated>2012-01-05</updated>
+    </item>
+    <item>
+      <title>Creepy Crawlies</title>
+      <updated>2011-01-05</updated>
+    </item>
+    <item>
+      <title>Paradox Lost</title>
+      <updated>2016-01-05</updated>
+    </item>
+    <item>
+      <title>Microsoft .NET: The Programming Bible</title>
+      <link>http://my.safaribooksonline.com/0-596-00102-7/</link>
+      <updated>2014-10-01</updated>
+    </item>
+    <item>
+      <title>MSXML3: A Comprehensive Guide</title>
+      <updated>2010-03-15</updated>
+    </item>
+    <item>
+      <title>Visual Studio 7: A Comprehensive Guide</title>
+      <updated>2011-04-25</updated>
+    </item>
+  </channel>
+</rss>
