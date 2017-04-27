@@ -11,7 +11,9 @@
     <xsl:element name="rss">
       <xsl:attribute name = "version">2.0</xsl:attribute>
       <xsl:element name="channel">
-        <xsl:apply-templates select="b:catalog"/>
+        <xsl:element name="title">Library.by</xsl:element>
+        <xsl:element name="description">Library</xsl:element>
+        <xsl:apply-templates/>
       </xsl:element>
     </xsl:element>
   </xsl:template>
@@ -37,5 +39,5 @@
   </xsl:template>
 
   <xsl:template match="node() | @*" />
-
+  
 </xsl:stylesheet>

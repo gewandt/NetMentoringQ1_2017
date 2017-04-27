@@ -34,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "xsd", "xsd", "{86CC3752-8D7
 		Module2\xsd\books.xsd = Module2\xsd\books.xsd
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module2.UI", "Module2.UI\Module2.UI.csproj", "{DADD5A0E-CD68-4D5D-BD6F-DD112BBD4955}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module2.UI", "Module2\Module2.UI\Module2.UI.csproj", "{DADD5A0E-CD68-4D5D-BD6F-DD112BBD4955}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

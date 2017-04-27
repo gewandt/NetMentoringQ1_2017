@@ -240,3 +240,6 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/Module2/result/rss.xml
+/Module2/result/report.html
+/Module2/result

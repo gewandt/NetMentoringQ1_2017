@@ -51,7 +51,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Module2\Tasks.AdvancedXml\Tasks.AdvancedXml.csproj">
+    <ProjectReference Include="..\Tasks.AdvancedXml\Tasks.AdvancedXml.csproj">
       <Project>{e11a7671-2520-47b4-a496-2fae3b44f88f}</Project>
       <Name>Tasks.AdvancedXml</Name>
     </ProjectReference>
