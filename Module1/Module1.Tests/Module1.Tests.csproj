@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Bar.cs" />
     <Compile Include="E3SProviderTests.cs" />
+    <Compile Include="EmployeeWorkstationEqualityComparer.cs" />
     <Compile Include="ExprTransformationTests.cs" />
     <Compile Include="Foo.cs" />
     <Compile Include="MapperTest.cs" />
