@@ -240,3 +240,7 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/Module5/tmp/image_003.png
+/Module5/tmp/image_002.png
+/Module5/tmp/image_001.png
+/Module5/tmp
