@@ -1,111 +1,116 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using Topshelf;
 
 namespace ScanService
 {
     public class ScanService : ServiceControl
     {
-        private const int TimePending = 10000;
+        private readonly TimeSpan TimePending = TimeSpan.FromSeconds(10);
 
-        private readonly FileSystemWatcher _fsWatcher;
-        private readonly Task _task;
         private readonly CancellationTokenSource _cancelToken;
-        private readonly AutoResetEvent _fileCreatedEvent;
+        private readonly FileService _fileService;
 
         private PdfDoc _pdf;
-        private FileService FileService { get; } = new FileService();
+
+        private int currentIndex = -1;
+        private int imageCount = 0;
+        private DateTimeOffset _lastImageAddedAt;
 
         public ScanService()
         {
-            _fileCreatedEvent = new AutoResetEvent(false);
-            _fsWatcher = new FileSystemWatcher();
+
             _cancelToken = new CancellationTokenSource();
+            _fileService = new FileService(_cancelToken.Token);
+
+            _fileService.NewData += _fileService_NewData;
+
             _pdf = CreateNewDocument();
-            _fsWatcher.Created += (sender, args) => _fileCreatedEvent.Set();
-            _task = new Task(() => Work(_cancelToken.Token));
+        }
+
+        private void _fileService_NewData(IMessage message)
+        {
+            //todo cancellation token support
+            if (message is NoNewData)
+            {
+                //message arrives after max pause interval
+                if (message.CreatedAt > _lastImageAddedAt + TimePending)
+                {
+                    SavePdf();
+                    _pdf = CreateNewDocument();
+                }
+                return;
+            }
+            else if (message is Data)
+            {
+                var data = (Data)message;
+                var imageIndex = GetImageIndex(Path.GetFileName(data.Location));
+
+                if (_pdf != null)
+                {
+                    if (_cancelToken.Token.IsCancellationRequested)
+                    {
+                        SavePdf();
+                        return;
+                    }
+
+                    if (_lastImageAddedAt - data.CreatedAt > TimePending)
+                    {
+                        SavePdf();
+                        _pdf = CreateNewDocument();
+                    }
+
+                    if (imageIndex != currentIndex + 1 && currentIndex != -1)
+                    {
+                        SavePdf();
+                        _pdf = CreateNewDocument();
+                    }
+                }
+
+                Debug.Assert(_pdf != null);
+
+                _pdf.AddImage(data.Location);
+                currentIndex = imageIndex;
+                imageCount++;
+                _lastImageAddedAt = DateTimeOffset.UtcNow;
+                _fileService.Delete(new FileInfo(data.Location));
+            }
         }
 
         public bool Start(HostControl hostControl)
         {
-            _task.Start();
+            _fileService.Start();
             return true;
         }
 
         public bool Stop(HostControl hostControl)
         {
             _cancelToken.Cancel();
-            _task.Wait();
+            _fileService.Stop();
             return true;
         }
 
-        public void Work(CancellationToken token)
+        private void SavePdf()
         {
-            var currentIndex = -1;
-            var imageCount = 0;
-            var nextPageWaiting = false;
-            do
-            {
-                foreach (var file in FileService.ImgDir.GetFiles().Skip(imageCount))
-                {
-                    var fileName = file.Name;
-                    if (IsValid(fileName))
-                    {
-                        var imageIndex = GetIndex(fileName);
-                        if (imageIndex != currentIndex + 1 && currentIndex != -1 && nextPageWaiting)
-                        {
-                            _pdf = SavePdf(_pdf);
-                            nextPageWaiting = false;
-                        }
-
-                        if (FileService.TryOpen(file, ConfigHelper.AttemtsCount))
-                        {
-                            _pdf.AddImage(file.FullName);
-                            currentIndex = imageIndex;
-                            nextPageWaiting = true;
-                            imageCount++;
-                        }
-                    }
-                }
-
-                if (!_fileCreatedEvent.WaitOne(TimePending) && nextPageWaiting)
-                {
-                    _pdf = SavePdf(_pdf);
-                    nextPageWaiting = false;
-                }
-
-                if (token.IsCancellationRequested)
-                {
-                    if (nextPageWaiting)
-                    {
-                        _pdf.Save(FileService.GetNextFilename());
-                    }
-
-                    foreach (var file in FileService.ImgDir.GetFiles())
-                    {
-                        FileService.Delete(file);
-                    }
-                }
-            } while (!token.IsCancellationRequested);
+            _pdf.Save(GetNextFilename());
+            _pdf = null;
         }
 
-        private PdfDoc SavePdf(PdfDoc pdf)
+        public string GetNextFilename()
         {
-            pdf.Save(FileService.GetNextFilename());
-            return CreateNewDocument();
+            var documentIndex = Directory.GetFiles(ConfigHelper.PdfDir).Length + 1;
+            return Path.Combine(ConfigHelper.PdfDir, $"out_{documentIndex}.pdf");
         }
 
-        private int GetIndex(string fileName)
+        private int GetImageIndex(string fileName)
         {
             var match = Regex.Match(fileName, @"[0-9]{3}");
             return match.Success ? int.Parse(match.Value) : -1;
         }
 
-        private bool IsValid(string fileName) => Regex.IsMatch(fileName, @"^img_[0-9]{3}.(jpg|png|jpeg)$");
-
-        private PdfDoc CreateNewDocument() => FileService.CreateNewDocument();
+        public PdfDoc CreateNewDocument() => new PdfDoc();
     }
 }
