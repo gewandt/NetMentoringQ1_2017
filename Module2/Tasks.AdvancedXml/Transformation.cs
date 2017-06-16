@@ -3,12 +3,13 @@ using System.IO;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using Tasks.AdvancedXml;
 
 namespace Tasks.AdvancedXML
 {
-    public class Transformation
+    public class Transformation : ITransform
     {
-        public static void TransformToRss(string sourceXml, string pathToXsltTemplate, string pathToResultFile)
+        public void TransformToRss(string sourceXml, string pathToXsltTemplate, string pathToResultFile)
         {
             var xslt = new XslCompiledTransform();
             xslt.Load(pathToXsltTemplate);
@@ -16,7 +17,7 @@ namespace Tasks.AdvancedXML
             xslt.Transform(sourceXml, new XsltArgumentList(), fileStream);
         }
 
-        public static void TransformToHtmlReport(string pathToXsltTemplate, FileStream input, FileStream output)
+        public void TransformToHtmlReport(string pathToXsltTemplate, FileStream input, FileStream output)
         {
             var xsltSettings = new XsltSettings
             {

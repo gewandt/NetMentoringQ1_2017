@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using Castle.DynamicProxy;
+using Logger;
+using System.IO;
 using Tasks.AdvancedXml;
 using Tasks.AdvancedXML;
 
@@ -18,21 +20,29 @@ namespace Module2.UI
 
         public static void TransformToRss()
         {
-            Transformation.TransformToRss(PathHelper.ValidXmlPath, PathHelper.RssTransformXsltPath, PathHelper.ResultRss);
+            var transform = new Transformation();
+            transform.TransformToRss(PathHelper.ValidXmlPath, PathHelper.RssTransformXsltPath, PathHelper.ResultRss);
         }
 
         public static void TransformToHtmlReport()
         {
             var output = new FileStream(PathHelper.ResultHtmlReport, FileMode.Create);
             var input = new FileStream(PathHelper.ValidXmlPath, FileMode.Open, FileAccess.Read);
-            Transformation.TransformToHtmlReport(PathHelper.HtmlReportXsltPath, input, output);
+            var transform = new Transformation();
+            transform.TransformToHtmlReport(PathHelper.HtmlReportXsltPath, input, output);
         }
 
         static void Main(string[] args)
         {
-            TransformToRss();
-            TransformToHtmlReport();
-            
+            var proxy = new ProxyGenerator();
+            var transformator = proxy.CreateInterfaceProxyWithTarget<ITransform>(new Transformation(), new InterceptorLog());
+
+            transformator.TransformToRss(PathHelper.ValidXmlPath, PathHelper.RssTransformXsltPath, PathHelper.ResultRss);
+
+            var output = new FileStream(PathHelper.ResultHtmlReport, FileMode.Create);
+            var input = new FileStream(PathHelper.ValidXmlPath, FileMode.Open, FileAccess.Read);
+            transformator.TransformToHtmlReport(PathHelper.HtmlReportXsltPath, input, output);
+
             ValidationValidXml();
             ValidationInvalidXml();
         }
