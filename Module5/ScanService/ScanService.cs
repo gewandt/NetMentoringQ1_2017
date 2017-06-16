@@ -9,16 +9,16 @@ namespace ScanService
 {
     public class ScanService : ServiceControl
     {
-        private readonly TimeSpan TimePending = TimeSpan.FromSeconds(10);
+        protected readonly TimeSpan TimePending = TimeSpan.FromSeconds(10);
 
-        private readonly CancellationTokenSource _cancelToken;
-        private readonly FileService _fileService;
+        protected readonly CancellationTokenSource _cancelToken;
+        protected readonly FileService _fileService;
 
-        private PdfDoc _pdf;
+        protected PdfDoc _pdf;
 
-        private int currentIndex = -1;
-        private int imageCount = 0;
-        private DateTimeOffset _lastImageAddedAt;
+        protected int currentIndex = -1;
+        protected int imageCount = 0;
+        protected DateTimeOffset _lastImageAddedAt;
 
         public ScanService()
         {
@@ -31,7 +31,7 @@ namespace ScanService
             _pdf = CreateNewDocument();
         }
 
-        private void _fileService_NewData(IMessage message)
+        protected virtual void _fileService_NewData(IMessage message)
         {
             //todo cancellation token support
             if (message is NoNewData)
@@ -93,7 +93,7 @@ namespace ScanService
             return true;
         }
 
-        private void SavePdf()
+        protected void SavePdf()
         {
             _pdf.Save(GetNextFilename());
             _pdf = null;
@@ -105,7 +105,7 @@ namespace ScanService
             return Path.Combine(ConfigHelper.PdfDir, $"out_{documentIndex}.pdf");
         }
 
-        private int GetImageIndex(string fileName)
+        protected int GetImageIndex(string fileName)
         {
             var match = Regex.Match(fileName, @"[0-9]{3}");
             return match.Success ? int.Parse(match.Value) : -1;
